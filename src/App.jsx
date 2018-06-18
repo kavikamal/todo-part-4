@@ -3,10 +3,10 @@ import { Link, Route, Switch, Redirect } from 'react-router-dom';
 import './App.css';
 import TodoList from './components/TodoList'
 import { connect } from "react-redux";
-import { markComplete, addTodo, deleteTodo, clearComplete } from "./actions/actions.js";
+import { markComplete, addTodo, deleteTodo, clearComplete } from "./actions.js";
 
 export class TodoApp extends Component {
- 
+
   checkboxHandler = id =>  {
     this.props.dispatch(markComplete(id));
   };
@@ -19,11 +19,18 @@ export class TodoApp extends Component {
     this.props.dispatch(clearComplete())
   };
 
+  // handleChange=(e)=> {
+  //   this.props.text= e.target.value ;
+  // }
+
   handleSubmit = e => {
-    if (e.key === "Enter" && e.target.value !== ''){
-    this.props.dispatch(addTodo(e.target.value))
+    e.preventDefault();
+    console.log(document.getElementById('new-todo').value);
+    
+     
+    this.props.dispatch(addTodo(document.getElementById('new-todo').value))
     document.getElementById('new-todo').value = '';
-    };
+    
   };
 
   render() {
@@ -35,34 +42,34 @@ export class TodoApp extends Component {
 	      <input
             id="new-todo" className="new-todo" 
             placeholder="What needs to be done?" autoFocus
-            onChange={this.handleChange}
+            // onChange={this.handleChange}
           
           />         
 			</header>
       <Switch>
-        <Route exact path="/todo-part-4/" render={(props) => <TodoList {...props} todos={this.props.todos} 
+        <Route exact path="/" render={(props) => <TodoList {...props} todos={this.props.todos} 
                                                      checkboxHandler={this.checkboxHandler} 
                                                      deleteTodo={this.deleteTodo} />} />
-        <Route path="/todo-part-4/active" render={(props) => <TodoList {...props} todos={this.props.todos.filter(todo => todo.completed === false)} 
+        <Route path="/active" render={(props) => <TodoList {...props} todos={this.props.todos.filter(todo => todo.completed === false)} 
                                                                 checkboxHandler={this.checkboxHandler} 
                                                                 deleteTodo={this.deleteTodo} />} />
-        <Route path="/todo-part-4/completed" render={(props) => <TodoList {...props} todos={this.props.todos.filter(todo => todo.completed === true)} 
+        <Route path="/completed" render={(props) => <TodoList {...props} todos={this.props.todos.filter(todo => todo.completed === true)} 
                                                                 checkboxHandler={this.checkboxHandler} 
                                                                 deleteTodo={this.deleteTodo} />} />
-        <Redirect to="/todo-part-4/" />                                                        
+        <Redirect to="/" />                                                        
       </Switch>
       <footer className="footer">
       
       <span className="todo-count"><strong>{this.props.todos.filter(todo => todo.completed === false).length}</strong> item(s) left</span>
       <ul className="filters">
         <li>
-        <Link to="/todo-part-4/">All</Link>   
+        <Link to="/">All</Link>   
         </li>
         <li>
-        <Link to="/todo-part-4/active">Active</Link>
+        <Link to="/active">Active</Link>
         </li>
         <li>
-        <Link to="/todo-part-4/completed">Completed</Link>
+        <Link to="/completed">Completed</Link>
         </li>
       </ul>
       <button className="clear-completed" onClick={this.deleteAllCompleted}>Clear completed</button>

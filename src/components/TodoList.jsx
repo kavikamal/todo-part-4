@@ -3,6 +3,7 @@ import TodoItem from './TodoItem'
 
 class TodoList extends Component {
     render() {
+      console.log(this.props.todos);
       return (			
         <div className="main">
         <ul className="todo-list" >
