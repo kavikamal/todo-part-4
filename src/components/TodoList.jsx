@@ -1,24 +1,68 @@
 import React, { Component } from 'react';
-import TodoItem from './TodoItem'
+import '../App.css';
+import TodoItem from './TodoItem.jsx';
+import '../reducer.js'
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { clearComplete } from '../actions.js'
 
 class TodoList extends Component {
-    render() {
-      console.log(this.props.todos);
-      return (			
-        <div className="main">
-        <ul className="todo-list" >
-          {this.props.todos.map(todo => (
-            <TodoItem completed={todo.completed} 
-                      title={todo.title} 
-                      id= {todo.id} 
-                      checkboxHandler={this.props.checkboxHandler} 
-                      deleteTodo={this.props.deleteTodo}>
-            </TodoItem> 
-          ))}
-        </ul>
-        </div>
-      );
-    }
+
+  removeAll = (e) => {
+    this.props.dispatch(clearComplete())
   }
 
-export default TodoList;  
+  render() {
+    const { todos } = this.props;
+
+    return (
+
+      <React.Fragment>
+        <section className="main">
+          <ul className="todo-list">
+            {todos.map(todo => <TodoItem todos={todos} id={todo.id} key={todo.id} value={todo.title}
+              completed={todo.completed} />)}
+          </ul>
+        </section>
+        <footer className="footer">
+
+          <span className="todo-count"><strong>{this.props.todos.filter(todo => !todo.completed).length}</strong> item(s) left</span>
+
+          <ul className="filters">
+
+            <li>
+              <Link to="/">All</Link>
+            </li>
+            <li>
+              <Link to="/active">Active</Link>
+            </li>
+            <li>
+              <Link to="/completed">Completed</Link>
+            </li>
+
+          </ul>
+
+          <button onClick={this.removeAll} className="clear-completed">Clear completed</button>
+
+        </footer>
+
+      </React.Fragment>
+    )
+  }
+}
+
+const mapStateToProps = (state, ownProps) => {
+
+  const routeObject = {
+    all: state.todos,
+    active: state.todos.filter(todo => !todo.completed),
+    completed: state.todos.filter(todo => todo.completed)
+  }
+
+
+  return {
+    todos: routeObject[ownProps.filter]
+  }
+}
+
+export default connect(mapStateToProps)(TodoList);

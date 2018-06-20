@@ -1,6 +1,11 @@
-import { MARK_COMPLETE,ADD_TODO,DELETE_TODO,CLEAR_COMPLETE } from "./actions";
+
+import { MARK_COMPLETE, ADD_TODO, DELETE_TODO, CLEAR_COMPLETED } from './actions.js'
 import todoList from './todos.json';
-const initialState = { todos: todoList, text: '' };
+
+const initialState = {
+    todos: todoList,
+    text: ''
+}
 
 export default (state = initialState, action) => {
     switch(action.type) {
@@ -8,7 +13,7 @@ export default (state = initialState, action) => {
                 return Object.assign({}, state, {
                     todos: state.todos.map(
                         todo =>
-                        todo.id === action.id
+                        todo.id === action.payload
                             ? {
                                 ...todo,
                                 completed: !todo.completed
@@ -19,20 +24,20 @@ export default (state = initialState, action) => {
                 
             case ADD_TODO:
                 return Object.assign({}, state, {
-                    todos: [...state.todos,
-                        {
-                            id: state.todos.length ? state.todos[state.todos.length - 1].id + 1 : 1,
-                            text: action.text,
-                            completed: false
-                        }
-                    ]
-                });
+                                    todos: [...state.todos, {
+                                            "userId": 1,
+                                            "id": state.todos.length + 1,
+                                            "title": action.payload,
+                                            "completed": false
+                                        }
+                                        ]
+                                    });
                 
             case DELETE_TODO: 
                 return Object.assign({}, state, {
-                    todos: state.todos.filter(todo => todo.id !== action.id)
+                    todos: state.todos.filter(todo => todo.id !== action.payload)
                 });    
-            case CLEAR_COMPLETE:
+            case CLEAR_COMPLETED:
                 return Object.assign({}, state, {
                     todos: state.todos.filter(todo => !todo.completed)
                 })
@@ -42,4 +47,3 @@ export default (state = initialState, action) => {
     }
 }    
 
-console.log(initialState);
